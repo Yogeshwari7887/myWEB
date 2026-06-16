@@ -1,125 +1,187 @@
-import { motion } from 'framer-motion';
-import { Github, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Github, ExternalLink, X, Layers } from 'lucide-react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const projects = [
   {
-    number: 'Project 01',
-    title: 'AI Powered Smart Traffic Management System For Emergency Vehicles',
-    overview: 'Built an intelligent traffic control system using YOLOv8 computer vision capable of detecting emergency vehicles from CCTV footage with 92% accuracy.',
+    title: 'AI Smart Traffic Management',
+    summary: 'Intelligent traffic control using YOLOv8 computer vision for detecting emergency vehicles with 92% accuracy and dynamic signal management.',
+    image: '/traffic-management.png',
+    tech: ['YOLOv8', 'Python', 'Flask', 'React', 'CV'],
+    github: 'https://github.com/Yogeshwari7887',
+    fullDescription: 'Built an intelligent traffic control system using YOLOv8 computer vision capable of detecting emergency vehicles from CCTV footage with 92% accuracy.',
     problem: 'Emergency vehicles often lose valuable time due to conventional traffic systems that cannot dynamically adapt to urgent situations.',
     solution: 'Implemented emergency vehicle detection and dynamic signal synchronization to automatically create green corridors for faster emergency response.',
     features: ['Emergency Vehicle Detection', 'YOLOv8 Integration', 'Real-Time Monitoring', 'Signal Synchronization', 'Green Corridor Generation', 'Dashboard Visualization'],
-    tech: ['YOLOv8', 'Python', 'Flask', 'React', 'Computer Vision'],
     impact: [
       { value: '92%', label: 'Detection Accuracy' },
-      { value: '40%', label: 'Faster Emergency Response' },
+      { value: '40%', label: 'Faster Response' },
     ],
-    github: 'https://github.com/Yogeshwari7887',
   },
   {
-    number: 'Project 02',
-    title: 'GrowPure — Organic E-Commerce Platform',
-    overview: 'Developed a full-stack organic e-commerce platform focused on user experience, scalability, and real-world business workflows.',
+    title: 'GrowPure — Organic E-Commerce',
+    summary: 'Full-stack organic e-commerce platform with authentication, cart management, coupons, admin dashboard, and order tracking.',
+    image: '/growpure.png',
+    tech: ['Django', 'Python', 'JavaScript', 'Bootstrap', 'MySQL'],
+    github: 'https://github.com/Yogeshwari7887',
+    fullDescription: 'Developed a full-stack organic e-commerce platform focused on user experience, scalability, and real-world business workflows.',
     features: ['Authentication', 'Shopping Cart', 'Coupons & Discounts', 'Wishlist', 'User Dashboard', 'Admin Dashboard', 'Order Tracking', 'Responsive Design'],
-    tech: ['Django', 'Python', 'HTML', 'CSS', 'JavaScript', 'Bootstrap', 'MySQL'],
-    highlight: 'This project demonstrates full-stack development skills, database integration, user management, and business workflow implementation.',
-    github: 'https://github.com/Yogeshwari7887',
+    highlight: 'Demonstrates full-stack development skills, database integration, user management, and business workflow implementation.',
   },
   {
-    number: 'Project 03',
-    title: 'YourHearingEar — Personal Counseling Website',
-    overview: 'Designed and developed a platform focused on empathetic communication and supportive user interaction.',
-    features: ['Structured Guidance', 'Ethical Interaction Design', 'User-Centric Experience', 'Conversational Support'],
-    tech: ['HTML', 'CSS', 'JavaScript', 'Python', 'Django'],
-    highlight: 'Creating meaningful and responsible digital interactions focused on empathy and user well-being.',
+    title: 'YourHearingEar — Counseling Platform',
+    summary: 'A platform focused on empathetic communication and supportive user interaction with structured guidance.',
+    image: '/yourhearingear.png',
+    tech: ['Django', 'Python', 'JavaScript', 'HTML', 'CSS'],
     github: 'https://github.com/Yogeshwari7887',
+    fullDescription: 'Designed and developed a platform focused on empathetic communication and supportive user interaction.',
+    features: ['Structured Guidance', 'Ethical Interaction Design', 'User-Centric Experience', 'Conversational Support'],
+    highlight: 'Creating meaningful and responsible digital interactions focused on empathy and user well-being.',
   },
 ];
 
-const cardVariant = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
-
-function ProjectCard({ project, index }) {
-  const [ref, isVisible] = useScrollReveal(0.1);
-
+function ProjectModal({ project, onClose }) {
   return (
     <motion.div
-      ref={ref}
-      className="project-card"
-      variants={cardVariant}
-      initial="hidden"
-      animate={isVisible ? 'visible' : 'hidden'}
+      className="project-modal-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
     >
-      <div className="project-header">
-        <div className="project-number">{project.number}</div>
-        <h3 className="project-title">{project.title}</h3>
-        <p className="project-overview">{project.overview}</p>
-      </div>
+      <motion.div
+        className="project-modal"
+        initial={{ opacity: 0, y: 30, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.97 }}
+        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="modal-close" onClick={onClose} aria-label="Close">
+          <X size={18} />
+        </button>
 
-      <div className="project-body">
-        {project.problem && project.solution && (
-          <div className="project-details">
-            <div className="project-detail-block">
-              <div className="project-detail-label">The Problem</div>
-              <p className="project-detail-text">{project.problem}</p>
-            </div>
-            <div className="project-detail-block">
-              <div className="project-detail-label">The Solution</div>
-              <p className="project-detail-text">{project.solution}</p>
-            </div>
-          </div>
-        )}
-
-        <div className="project-features-section">
-          <div className="project-features-title">Key Features</div>
-          <div className="project-features">
-            {project.features.map((f) => (
-              <span key={f} className="project-feature">{f}</span>
-            ))}
-          </div>
-        </div>
-
-        <div className="project-tech-section">
-          <div className="project-features-title">Technologies</div>
-          <div className="project-tech">
+        <div className="modal-header">
+          <h3 className="modal-title">{project.title}</h3>
+          <div className="modal-tech">
             {project.tech.map((t) => (
-              <span key={t} className="tech-badge">{t}</span>
+              <span key={t} className="modal-tech-badge">{t}</span>
             ))}
           </div>
         </div>
 
-        {project.impact && (
-          <div className="project-impact">
-            {project.impact.map((imp, i) => (
-              <div key={i} className="impact-card">
-                <div className="impact-value">{imp.value}</div>
-                <div className="impact-label">{imp.label}</div>
+        <div className="modal-body">
+          <div className="modal-section">
+            <h4 className="modal-label">Overview</h4>
+            <p className="modal-text">{project.fullDescription}</p>
+          </div>
+
+          {project.problem && (
+            <div className="modal-grid">
+              <div className="modal-section">
+                <h4 className="modal-label">Problem</h4>
+                <p className="modal-text">{project.problem}</p>
               </div>
-            ))}
-          </div>
-        )}
+              <div className="modal-section">
+                <h4 className="modal-label">Solution</h4>
+                <p className="modal-text">{project.solution}</p>
+              </div>
+            </div>
+          )}
 
-        {project.highlight && (
-          <div className="project-highlight">
-            <p>{project.highlight}</p>
+          <div className="modal-section">
+            <h4 className="modal-label">Key Features</h4>
+            <div className="modal-features">
+              {project.features.map((f) => (
+                <span key={f} className="modal-feature">{f}</span>
+              ))}
+            </div>
           </div>
-        )}
 
-        <div className="project-actions">
+          {project.impact && (
+            <div className="modal-section">
+              <h4 className="modal-label">Impact</h4>
+              <div className="modal-impact">
+                {project.impact.map((imp, i) => (
+                  <div key={i} className="modal-impact-card">
+                    <span className="modal-impact-value">{imp.value}</span>
+                    <span className="modal-impact-label">{imp.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {project.highlight && (
+            <div className="modal-highlight">
+              <p>{project.highlight}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="modal-footer">
           <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-            <Github size={16} /> View on GitHub
+            <Github size={15} /> GitHub
           </a>
           {project.demo && (
             <a href={project.demo} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-              <ExternalLink size={16} /> Live Demo
+              <ExternalLink size={15} /> Live Demo
             </a>
           )}
         </div>
-      </div>
+      </motion.div>
     </motion.div>
+  );
+}
+
+function ProjectCard({ project }) {
+  const [imgError, setImgError] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <>
+      <div className="pcard">
+        <div className="pcard-image">
+          {!imgError ? (
+            <img
+              src={project.image}
+              alt={project.title}
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="pcard-image-placeholder">
+              <Layers size={32} />
+            </div>
+          )}
+          <div className="pcard-image-overlay" />
+        </div>
+
+        <div className="pcard-content">
+          <h3 className="pcard-title">{project.title}</h3>
+          <p className="pcard-summary">{project.summary}</p>
+
+          <div className="pcard-tech">
+            {project.tech.map((t) => (
+              <span key={t} className="pcard-badge">{t}</span>
+            ))}
+          </div>
+
+          <div className="pcard-actions">
+            <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn btn-secondary pcard-btn">
+              <Github size={14} /> GitHub
+            </a>
+            <button className="btn btn-primary pcard-btn" onClick={() => setModalOpen(true)}>
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {modalOpen && <ProjectModal project={project} onClose={() => setModalOpen(false)} />}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -134,18 +196,31 @@ export default function Projects() {
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
-          <div className="section-label">Featured Projects</div>
-          <h2 className="section-title">Selected Work</h2>
-          <p className="section-subtitle">
-            Projects that showcase problem-solving ability, technical depth, and real-world impact.
+          <div className="section-label">Projects</div>
+          <h2 className="section-title" style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}>Selected Work</h2>
+          <p className="section-subtitle" style={{ fontSize: '15px' }}>
+            A selection of projects showcasing my experience in full-stack development, AI, and problem-solving.
           </p>
         </motion.div>
 
-        <div className="projects-list">
+        <motion.div
+          className="projects-grid"
+          initial="hidden"
+          animate={isVisible ? 'visible' : 'hidden'}
+          variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+        >
           {projects.map((project, i) => (
-            <ProjectCard key={i} project={project} index={i} />
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: 25 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+              }}
+            >
+              <ProjectCard project={project} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
