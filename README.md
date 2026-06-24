@@ -77,16 +77,17 @@ portfolio/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/portfolio.git
+git clone https://github.com/Yogeshwari7887/myWEB.git
 
 # 2. Move into the directory
-cd portfolio
+cd myWEB
 
 # 3. Install dependencies
 npm install
 
 # 4. Start the dev server
 npm run dev
+```
 
 ---
 
@@ -104,10 +105,10 @@ npm run dev
 
 <div align="center">
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/your-profile)
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-username)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yogeshwari-kalaskar)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Yogeshwari7887)
 [![Portfolio](https://img.shields.io/badge/Portfolio-6C63FF?style=for-the-badge&logo=vercel&logoColor=white)](https://my-web-ten-smoky.vercel.app/)
-[![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:your@email.com)
+[![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:yogeshwari7887@email.com)
 
 </div>
 

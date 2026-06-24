@@ -1,117 +1,186 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Sparkles, ArrowRight, Github, Linkedin, Mail } from 'lucide-react';
 
-const navItems = [
-  { label: 'Home', href: '#home' },
-  { label: 'Education', href: '#education' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Contact', href: '#contact' },
+const navLinks = [
+  { name: 'Home', href: '#home', icon: '🏠' },
+  { name: 'About', href: '#about', icon: '👤' },
+  { name: 'Education', href: '#education', icon: '🎓' },
+  { name: 'Projects', href: '#projects', icon: '💻' },
+  { name: 'Contact', href: '#contact', icon: '✉️' },
 ];
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-
-  const menuRef = useRef(null);
-  const toggleRef = useRef(null);
+  const [activeLink, setActiveLink] = useState('Home');
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 20);
 
-      const sections = navItems.map(item => item.href.slice(1));
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && el.getBoundingClientRect().top <= 150) {
-          setActiveSection(sections[i]);
-          break;
+      // Update active link based on scroll position
+      const sections = navLinks.map(link => ({
+        id: link.href.replace('#', ''),
+        element: document.getElementById(link.href.replace('#', ''))
+      }));
+
+      const scrollPosition = window.scrollY + 100;
+      for (const section of sections) {
+        if (section.element) {
+          const { offsetTop, offsetHeight } = section.element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveLink(section.id.charAt(0).toUpperCase() + section.id.slice(1));
+            break;
+          }
         }
       }
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        mobileOpen &&
-        menuRef.current && !menuRef.current.contains(event.target) &&
-        toggleRef.current && !toggleRef.current.contains(event.target)
-      ) {
-        setMobileOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [mobileOpen]);
-
-  const handleNavClick = (e, href) => {
-    e.preventDefault();
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-      setMobileOpen(false);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
-  };
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
-      <div className="container">
-        <a href="#home" className="nav-logo" onClick={(e) => handleNavClick(e, '#home')}>
-          Y<span>.</span>K
-        </a>
+    <>
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+        <div className="container">
+          {/* Logo */}
+          <a href="#home" className="nav-logo">
+            <div className="logo-icon">YK</div>
+            <span className="logo-text">
+              Yogeshwari<span>.</span>
+            </span>
+          </a>
 
-        <div className="nav-links">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={activeSection === item.href.slice(1) ? 'active' : ''}
-              onClick={(e) => handleNavClick(e, item.href)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-
-        <div
-          ref={toggleRef}
-          className={`nav-toggle ${mobileOpen ? 'open' : ''}`}
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-          role="button"
-          tabIndex={0}
-        >
-          <span /><span /><span />
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            ref={menuRef}
-            className="mobile-menu"
-            initial={{ x: 280 }}
-            animate={{ x: 0 }}
-            exit={{ x: 280 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            {navItems.map((item) => (
+          {/* Desktop Links */}
+          <div className="nav-links">
+            {navLinks.map((link) => (
               <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
+                key={link.name}
+                href={link.href}
+                className={activeLink === link.name ? 'active' : ''}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
-                {item.label}
+                {link.name}
+                <span className="link-counter">
+                  {link.name === 'Home' ? '01' :
+                    link.name === 'About' ? '02' :
+                      link.name === 'Education' ? '03' :
+                        link.name === 'Projects' ? '04' : '05'}
+                </span>
               </a>
             ))}
+            <a href="#contact" className="nav-cta">
+              <span>Let's Connect</span>
+              <ArrowRight size={14} />
+            </a>
+          </div>
+
+          {/* Mobile Toggle */}
+          <div
+            className={`nav-toggle ${isOpen ? 'open' : ''}`}
+            onClick={() => setIsOpen(!isOpen)}
+            role="button"
+            aria-label="Toggle menu"
+          >
+            <span />
+            <span />
+            <span />
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Overlay */}
+      <div
+        className={`mobile-overlay ${isOpen ? 'open' : ''}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="mobile-menu open"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <div className="mobile-header">
+              <span className="mobile-logo">YK</span>
+              <button
+                onClick={() => setIsOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {navLinks.map((link, index) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
+                  setIsOpen(false);
+                }}
+              >
+                <span className="mobile-link-icon">
+                  <span style={{ fontSize: '14px' }}>{link.icon}</span>
+                </span>
+                {link.name}
+                <span className="mobile-link-number">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </a>
+            ))}
+
+            <div className="mobile-divider" />
+
+            <a href="#contact" className="mobile-cta" onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+              setIsOpen(false);
+            }}>
+              Let's Connect <ArrowRight size={16} style={{ display: 'inline', marginLeft: '8px' }} />
+            </a>
+
+            <div className="mobile-socials">
+              <a href="https://github.com/Yogeshwari7887" target="_blank" rel="noopener noreferrer">
+                <Github size={16} />
+              </a>
+              <a href="www.linkedin.com/in/yogeshwari-kalaskar-2724182b2" target="_blank" rel="noopener noreferrer">
+                <Linkedin size={16} />
+              </a>
+              <a href="mailto:yogeshwari@email.com">
+                <Mail size={16} />
+              </a>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }

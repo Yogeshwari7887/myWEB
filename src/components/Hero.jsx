@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, ArrowDown, Github, Linkedin } from 'lucide-react';
+import { Download, ArrowDown, Github, Linkedin, Sparkles, Code, Server, Database, Layers } from 'lucide-react';
 
 /* ── Data ── */
 const roles = ['Full Stack Developer', 'Python Developer', 'Software Developer', 'Problem Solver'];
 
 const metrics = [
-  { value: '9.4', label: 'CGPA' },
-  { value: '91.49%', label: 'Diploma' },
-  { value: '3+', label: 'Projects' },
-  { value: '7 Wks', label: 'Training' },
+  { value: '9.4', label: 'CGPA', icon: <Sparkles size={14} /> },
+  { value: '91.49%', label: 'Diploma', icon: <Code size={14} /> },
+  { value: '8+', label: 'Projects', icon: <Layers size={14} /> },
+  { value: '7 Wks', label: 'Training', icon: <Server size={14} /> },
 ];
 
 const DEVICON = 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons';
@@ -53,13 +53,14 @@ function ParticleCanvas() {
     resize();
     window.addEventListener('resize', resize);
 
-    const count = window.innerWidth <= 640 ? 25 : 50;
+    const count = window.innerWidth <= 640 ? 30 : 60;
     particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: 1 + Math.random(),
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
+      size: 1 + Math.random() * 2,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      opacity: 0.1 + Math.random() * 0.2,
     }));
 
     const onMouse = (e) => {
@@ -70,8 +71,26 @@ function ParticleCanvas() {
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesRef.current.forEach((p) => {
-        /* mouse parallax */
+
+      // Draw connections
+      const particles = particlesRef.current;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(95,168,168,${0.06 * (1 - dist / 150)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      particles.forEach((p) => {
         const dx = (mouseRef.current.x - canvas.width / 2) * 0.02;
         const dy = (mouseRef.current.y - canvas.height / 2) * 0.02;
 
@@ -84,7 +103,7 @@ function ParticleCanvas() {
 
         ctx.beginPath();
         ctx.arc(p.x + dx, p.y + dy, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(95,168,168,0.18)';
+        ctx.fillStyle = `rgba(95,168,168,${p.opacity})`;
         ctx.fill();
       });
       rafRef.current = requestAnimationFrame(draw);
@@ -109,6 +128,7 @@ function FloatingIcon({ icon, angle, dist, invert, name }) {
   const y = Math.sin(rad) * dist;
   const floatDuration = 3 + Math.random() * 2;
   const floatDelay = Math.random() * -5;
+  const rotation = Math.random() * 360;
 
   return (
     <div
@@ -118,18 +138,22 @@ function FloatingIcon({ icon, angle, dist, invert, name }) {
         '--fy': `${y}px`,
         '--float-dur': `${floatDuration}s`,
         '--float-delay': `${floatDelay}s`,
+        '--rotation': `${rotation}deg`,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <img
-        src={icon}
-        alt={name}
-        className={invert ? 'invert-icon' : ''}
-        loading="lazy"
-        width="32"
-        height="32"
-      />
+      <div className="float-icon-wrapper">
+        <img
+          src={icon}
+          alt={name}
+          className={invert ? 'invert-icon' : ''}
+          loading="lazy"
+          width="34"
+          height="34"
+        />
+        <div className="float-icon-glow" />
+      </div>
       {hovered && <span className="hero-float-tooltip">{name}</span>}
     </div>
   );
@@ -140,6 +164,7 @@ export default function Hero() {
   const [roleIndex, setRoleIndex] = useState(0);
   const [scrollOp, setScrollOp] = useState(1);
   const imageWrapRef = useRef(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -148,7 +173,6 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, []);
 
-  /* Scroll-fade for indicator */
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
@@ -158,15 +182,15 @@ export default function Hero() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* Image parallax */
   const handleMouse = useCallback((e) => {
     if (!imageWrapRef.current) return;
     const rect = imageWrapRef.current.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const x = (e.clientX - cx) * 0.015;
-    const y = (e.clientY - cy) * 0.015;
+    const x = (e.clientX - cx) * 0.02;
+    const y = (e.clientY - cy) * 0.02;
     imageWrapRef.current.style.transform = `translate(${x}px, ${y}px)`;
+    setMousePosition({ x: e.clientX, y: e.clientY });
   }, []);
 
   useEffect(() => {
@@ -179,6 +203,7 @@ export default function Hero() {
       {/* Z-layer backgrounds */}
       <div className="hero-glow hero-glow-left" aria-hidden="true" />
       <div className="hero-glow hero-glow-right" aria-hidden="true" />
+      <div className="hero-glow hero-glow-center" aria-hidden="true" />
       <ParticleCanvas />
 
       <div className="container">
@@ -188,32 +213,34 @@ export default function Hero() {
             {/* Eyebrow */}
             <motion.div className="hero-eyebrow" custom={0} variants={fadeUp}>
               <span className="hero-eyebrow-line" />
-              HELLO, I'M
+              <span className="hero-eyebrow-text">Welcome to my portfolio</span>
+              <span className="hero-eyebrow-dot" />
             </motion.div>
 
             {/* Name */}
             <motion.h1 className="hero-name" custom={1} variants={fadeUp}>
-              Yogeshwari
+              <span className="hero-name-first">Yogeshwari</span>
               <span className="hero-name-last">Kalaskar</span>
             </motion.h1>
 
             {/* Role */}
             <motion.div className="hero-role-line" custom={2} variants={fadeUp}>
-              <span className="hero-role-pipe">|</span>
+              <span className="hero-role-pipe">✦</span>
               <div className="hero-role-slot">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={roleIndex}
                     className="hero-role-text"
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
+                    exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                   >
                     {roles[roleIndex]}
                   </motion.span>
                 </AnimatePresence>
               </div>
+              <span className="hero-role-cursor">|</span>
             </motion.div>
 
             {/* Tagline */}
@@ -225,10 +252,10 @@ export default function Hero() {
             {/* Buttons */}
             <motion.div className="hero-buttons" custom={4} variants={fadeUp}>
               <a href="#projects" className="btn btn-primary" onClick={(e) => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}>
-                View Projects
+                <Sparkles size={15} /> Explore My Work
               </a>
               <a href="/resume.pdf" download="Yogeshwari_Kalaskar_Resume.pdf" className="btn btn-secondary" aria-label="Download Resume">
-                <Download size={15} /> Download Resume
+                <Download size={15} /> Resume
               </a>
             </motion.div>
 
@@ -237,26 +264,21 @@ export default function Hero() {
               <a href="https://github.com/Yogeshwari7887" target="_blank" rel="noopener noreferrer" className="hero-social-icon" aria-label="GitHub">
                 <Github size={18} />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hero-social-icon" aria-label="LinkedIn">
+              <a href="www.linkedin.com/in/yogeshwari-kalaskar-2724182b2" target="_blank" rel="noopener noreferrer" className="hero-social-icon" aria-label="LinkedIn">
                 <Linkedin size={18} />
+              </a>
+              <a href="mailto:yogeshwari@email.com" className="hero-social-icon" aria-label="Email">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
               </a>
             </motion.div>
 
-            {/* Metric Cards */}
-            <motion.div className="hero-metrics" custom={6} variants={fadeUp}>
-              {metrics.map((m, i) => (
-                <div key={i} className="hero-metric-card">
-                  <span className="hero-metric-value">{m.value}</span>
-                  <span className="hero-metric-label">{m.label}</span>
-                </div>
-              ))}
-            </motion.div>
+
           </motion.div>
 
           {/* ── Right Column ── */}
           <motion.div
             className="hero-right"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
@@ -269,6 +291,7 @@ export default function Hero() {
               {/* Image Frame */}
               <div className="hero-image-outer" ref={imageWrapRef}>
                 <div className="hero-image-frame">
+                  <div className="hero-image-glow-ring" />
                   <img
                     src="/me.jpeg"
                     alt="Yogeshwari Kalaskar"
@@ -280,8 +303,14 @@ export default function Hero() {
                     }}
                   />
                   <div className="hero-image-overlay" />
+                  <div className="hero-image-border" />
                 </div>
               </div>
+
+              {/* Decorative rings */}
+              <div className="orbit-ring ring-1" />
+              <div className="orbit-ring ring-2" />
+              <div className="orbit-ring ring-3" />
             </div>
           </motion.div>
         </div>
@@ -292,7 +321,8 @@ export default function Hero() {
         <div className="hero-scroll-mouse">
           <div className="hero-scroll-dot" />
         </div>
-        <span className="hero-scroll-label">Explore Portfolio</span>
+        <span className="hero-scroll-label">Scroll to explore</span>
+        <ArrowDown size={14} className="scroll-arrow" />
       </div>
     </section>
   );
