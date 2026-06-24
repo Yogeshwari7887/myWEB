@@ -2,17 +2,14 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, MapPin, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import toast from 'react-hot-toast';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 // ━━━ EmailJS Configuration ━━━
-// To make the contact form work:
-// 1. Create a free account at https://www.emailjs.com
-// 2. Create an Email Service (e.g., Gmail)
-// 3. Create an Email Template with variables: from_name, from_email, subject, message
-// 4. Replace these values with your own:
-const EMAILJS_SERVICE_ID = 'service_XXXXXXX';   // Your EmailJS Service ID
-const EMAILJS_TEMPLATE_ID = 'template_XXXXXXX'; // Your EmailJS Template ID
-const EMAILJS_PUBLIC_KEY = 'XXXXXXXXXXXXXXX';    // Your EmailJS Public Key
+// Read credentials from environment variables (import.meta.env for Vite)
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const contactInfo = [
   { icon: <Mail size={18} />, label: 'Email', value: 'yogeshwari7887@gmail.com', href: 'mailto:yogeshwari7887@gmail.com' },
@@ -34,7 +31,7 @@ export default function Contact() {
     const errs = {};
     if (!formData.from_name.trim()) errs.from_name = 'Name is required';
     if (!formData.from_email.trim()) errs.from_email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.from_email)) errs.from_email = 'Invalid email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.from_email)) errs.from_email = 'Invalid email format';
     if (!formData.subject.trim()) errs.subject = 'Subject is required';
     if (!formData.message.trim()) errs.message = 'Message is required';
     return errs;
@@ -51,14 +48,18 @@ export default function Contact() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
     setStatus('loading');
+    const toastId = toast.loading('Sending...');
+    
     try {
       await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formRef.current, EMAILJS_PUBLIC_KEY);
       setStatus('success');
+      toast.success('Message sent successfully.', { id: toastId });
       setFormData({ from_name: '', from_email: '', subject: '', message: '' });
       setTimeout(() => setStatus('idle'), 5000);
     } catch (err) {
       console.error('EmailJS Error:', err);
       setStatus('error');
+      toast.error('Failed to send message. Please try again later.', { id: toastId });
       setTimeout(() => setStatus('idle'), 5000);
     }
   };

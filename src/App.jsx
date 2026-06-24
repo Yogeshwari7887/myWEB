@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
+import { Toaster } from 'react-hot-toast';
 import './styles/sections.css';
 import './styles/components.css';
 
@@ -33,6 +34,32 @@ export default function App() {
 
   return (
     <>
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: '#162325',
+            color: '#F5F7F7',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: '16px',
+            fontSize: '14px',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#5FA8A8',
+              secondary: '#162325',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#e05555',
+              secondary: '#162325',
+            },
+          },
+        }}
+      />
       <Navbar />
       <main>
         <Hero />

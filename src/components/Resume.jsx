@@ -1,83 +1,114 @@
 import { motion } from 'framer-motion';
-import { FileText, Download, Eye, MapPin, Mail, Briefcase } from 'lucide-react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { Download, Eye, Sparkles } from 'lucide-react';
 
 const highlights = [
-  { value: '9.4', label: 'Current CGPA' },
+  { value: '9.4', label: 'CGPA' },
   { value: '91.49%', label: 'Diploma Score' },
+  { value: '3+', label: 'Major Projects' },
   { value: '7 Weeks', label: 'Industry Training' },
-  { value: '3+', label: 'AI & Web Projects' },
+  { value: 'Full Stack', label: 'Python & Django' },
 ];
 
+const paragraphs = [
+  'I am a B.Tech Information Technology student at Vishwakarma Institute of Technology, Pune, with a strong academic background and practical experience in full-stack development and software engineering.',
+  'After securing 91.49% in Diploma Computer Engineering, I continued my academic journey while actively building real-world projects, completing industry training, and strengthening my expertise in modern web technologies.',
+  'My interests include full-stack development, backend engineering, database systems, and AI-powered applications that solve meaningful real-world problems.',
+  'I continuously focus on improving my technical skills through hands-on development, project-based learning, and exploring modern software engineering practices.',
+];
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+const fadeLeft = {
+  hidden: { opacity: 0, x: -30 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+const fadeRight = {
+  hidden: { opacity: 0, x: 30 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+
 export default function Resume() {
-  const [ref, isVisible] = useScrollReveal(0.15);
+  const [ref, isVisible] = useScrollReveal(0.06);
 
   return (
-    <section className="resume-section" id="resume">
+    <section className="profile-section" id="resume">
       <div className="container" ref={ref}>
+        {/* ── Section Header ── */}
         <motion.div
+          className="profile-header"
           initial={{ opacity: 0, y: 20 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
-          <div className="section-label">Resume</div>
-          <h2 className="section-title">Professional Summary</h2>
+          <div className="section-label">Profile Overview</div>
+          <h2 className="section-title" style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}>
+            About Me
+          </h2>
+          <p className="section-subtitle" style={{ fontSize: '15px' }}>
+            A snapshot of my academic journey, technical expertise, and passion for building impactful software solutions.
+          </p>
         </motion.div>
 
-        <motion.div
-          className="resume-content"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.15 }}
-        >
-          <div className="resume-left">
-            <p className="resume-summary">
-              A dedicated and detail-oriented engineering student with a strong academic track record
-              and practical experience in full-stack web development. Skilled in building scalable
-              applications using Python, Django, and modern frontend technologies, with a keen
-              interest in AI-powered solutions and clean software architecture.
-            </p>
-
-            <div className="resume-highlights">
-              {highlights.map((h, i) => (
-                <div key={i} className="resume-highlight">
-                  <div className="resume-highlight-value">{h.value}</div>
-                  <div className="resume-highlight-label">{h.label}</div>
-                </div>
-              ))}
+        {/* ── Two-Column Layout ── */}
+        <div className="profile-grid">
+          {/* Left Column — Statement + Resume Actions */}
+          <motion.div
+            className="profile-statement-col"
+            variants={fadeLeft}
+            initial="hidden"
+            animate={isVisible ? 'visible' : 'hidden'}
+          >
+            <div className="profile-statement-card">
+              <div className="profile-statement-accent" />
+              <Sparkles size={20} className="profile-statement-icon" />
+              <blockquote className="profile-statement">
+                Building modern software solutions through full-stack development, problem&nbsp;solving, and continuous learning.
+              </blockquote>
             </div>
 
-            <div className="resume-actions">
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            <div className="profile-resume-actions">
+              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-primary" aria-label="View Resume in new tab">
                 <Eye size={16} /> View Resume
               </a>
-              <a href="/resume.pdf" download className="btn btn-secondary">
-                <Download size={16} /> Download Resume
+              <a href="/resume.pdf" download="Yogeshwari_Kalaskar_Resume.pdf" className="btn btn-secondary" aria-label="Download Resume">
+                <Download size={16} /> Download
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="resume-visual">
-            <div className="resume-card-preview">
-              <div className="resume-card-icon">
-                <FileText size={28} />
-              </div>
-              <h4 className="resume-card-name">Yogeshwari Kalaskar</h4>
-              <p className="resume-card-role">Full Stack Developer · Python Developer</p>
-              <div className="resume-card-divider" />
-              <div className="resume-card-details">
-                <span className="resume-card-detail">
-                  <MapPin size={14} /> Pune, Maharashtra, India
-                </span>
-                <span className="resume-card-detail">
-                  <Mail size={14} /> yogeshwari7887@gmail.com
-                </span>
-                <span className="resume-card-detail">
-                  <Briefcase size={14} /> Open to Opportunities
-                </span>
-              </div>
-            </div>
-          </div>
+          {/* Right Column — Bio */}
+          <motion.div
+            className="profile-bio-col"
+            variants={fadeRight}
+            initial="hidden"
+            animate={isVisible ? 'visible' : 'hidden'}
+          >
+            {paragraphs.map((p, i) => (
+              <p key={i} className="profile-paragraph">{p}</p>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ── Highlight Cards ── */}
+        <motion.div
+          className="profile-highlights"
+          variants={stagger}
+          initial="hidden"
+          animate={isVisible ? 'visible' : 'hidden'}
+        >
+          {highlights.map((h, i) => (
+            <motion.div key={i} className="profile-hl-card" variants={fadeUp}>
+              <span className="profile-hl-value">{h.value}</span>
+              <span className="profile-hl-label">{h.label}</span>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

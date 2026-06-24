@@ -90,8 +90,7 @@ export default function Hero() {
               <a
                 href="/resume.pdf"
                 className="btn btn-primary"
-                target="_blank"
-                rel="noopener noreferrer"
+                download="Yogeshwari_Kalaskar_Resume.pdf"
                 onMouseMove={handleMagnetic}
                 onMouseLeave={handleMagneticLeave}
               >
@@ -133,7 +132,14 @@ export default function Hero() {
           >
             <div className="hero-image-wrapper">
               <div className="hero-image-frame">
-                <img src="/me.jpeg" alt="Yogeshwari Kalaskar" />
+                <img 
+                  src="/me.jpeg" 
+                  alt="Yogeshwari Kalaskar" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://ui-avatars.com/api/?name=Yogeshwari+Kalaskar&background=162325&color=5FA8A8&size=512';
+                  }}
+                />
                 <div className="hero-image-glow" />
               </div>
             </div>

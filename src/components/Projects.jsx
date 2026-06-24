@@ -7,7 +7,7 @@ const projects = [
   {
     title: 'AI Smart Traffic Management',
     summary: 'Intelligent traffic control using YOLOv8 computer vision for detecting emergency vehicles with 92% accuracy and dynamic signal management.',
-    image: '/images/project1.png',
+    image: '/project1.png',
     tech: ['YOLOv8', 'Python', 'Flask', 'React', 'CV'],
     github: 'https://github.com/Yogeshwari7887',
     fullDescription: 'Built an intelligent traffic control system using YOLOv8 computer vision capable of detecting emergency vehicles from CCTV footage with 92% accuracy.',
@@ -22,7 +22,7 @@ const projects = [
   {
     title: 'GrowPure — Organic E-Commerce',
     summary: 'Full-stack organic e-commerce platform with authentication, cart management, coupons, admin dashboard, and order tracking.',
-    image: '/images/project2.png',
+    image: '/project2.png',
     tech: ['Django', 'Python', 'JavaScript', 'Bootstrap', 'MySQL'],
     github: 'https://github.com/Yogeshwari7887',
     fullDescription: 'Developed a full-stack organic e-commerce platform focused on user experience, scalability, and real-world business workflows.',
@@ -32,7 +32,7 @@ const projects = [
   {
     title: 'YourHearingEar — Counseling Platform',
     summary: 'A platform focused on empathetic communication and supportive user interaction with structured guidance.',
-    image: '/images/project3.png',
+    image: '/project3.png',
     tech: ['Django', 'Python', 'JavaScript', 'HTML', 'CSS'],
     github: 'https://github.com/Yogeshwari7887',
     fullDescription: 'Designed and developed a platform focused on empathetic communication and supportive user interaction.',
@@ -42,7 +42,7 @@ const projects = [
   {
     title: '2048 Puzzle Game',
     summary: 'Fully functional 2048 puzzle game for Android with swipe controls, score tracking, and smooth gameplay experience.',
-    image: '/images/project4.png',
+    image: '/project4.png',
     tech: ['Java', 'Android Studio', 'XML'],
     github: 'https://github.com/Yogeshwari7887',
     fullDescription: 'Developed a fully functional 2048 puzzle game for Android using Java and Android Studio. Implemented tile merging mechanics, score tracking, responsive game logic, and smooth gameplay experience.',
