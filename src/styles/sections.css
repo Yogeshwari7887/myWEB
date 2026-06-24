@@ -413,7 +413,7 @@
   left: 50%;
   width: 36px;
   height: 36px;
-  transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy)));
+  transform: translate(calc(-50% + var(--fx) * var(--orbit-scale, 1)), calc(-50% + var(--fy) * var(--orbit-scale, 1)));
   opacity: 0.20;
   transition: opacity var(--transition-fast), transform var(--transition-fast);
   z-index: 6;
@@ -426,7 +426,7 @@
 }
 .hero-float-icon.hovered {
   opacity: 0.60;
-  transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(1.15);
+  transform: translate(calc(-50% + var(--fx) * var(--orbit-scale, 1)), calc(-50% + var(--fy) * var(--orbit-scale, 1))) scale(1.15);
 }
 .hero-float-tooltip {
   position: absolute;
@@ -446,8 +446,8 @@
 }
 
 @keyframes float-icon {
-  0% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy) - 8px)); }
-  100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy) + 8px)); }
+  0% { transform: translate(calc(-50% + var(--fx) * var(--orbit-scale, 1)), calc(-50% + var(--fy) * var(--orbit-scale, 1) - 8px)); }
+  100% { transform: translate(calc(-50% + var(--fx) * var(--orbit-scale, 1)), calc(-50% + var(--fy) * var(--orbit-scale, 1) + 8px)); }
 }
 
 /* ── Scroll Indicator ── */
@@ -502,9 +502,8 @@
 /* ── Hero Responsive ── */
 @media (max-width: 1024px) {
   .hero-name { font-size: 56px; }
-  .hero-image-orbit { width: 380px; height: 440px; }
+  .hero-image-orbit { width: 380px; height: 440px; --orbit-scale: 0.8; }
   .hero-image-outer { width: 280px; height: 350px; }
-  .hero-float-icon { display: none; }
 }
 
 @media (max-width: 900px) {
@@ -519,16 +518,28 @@
   .hero-buttons { justify-content: center; }
   .hero-socials { justify-content: center; }
   .hero-right { order: -1; }
-  .hero-image-orbit { width: 300px; height: 360px; }
+  .hero-image-orbit { width: 300px; height: 360px; --orbit-scale: 0.6; }
   .hero-image-outer { width: 240px; height: 300px; border-radius: 20px; }
-  .hero-float-icon { display: none; }
   .hero-scroll-indicator { display: none; }
 }
 
 @media (max-width: 640px) {
   .hero-name { font-size: 44px; }
-  .hero-metrics { grid-template-columns: repeat(2, 1fr); }
-  .hero-image-orbit { width: 240px; height: 300px; }
+  .hero-metrics { 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 6px; 
+  }
+  .hero-metric-card {
+    padding: 10px 4px;
+  }
+  .hero-metric-value {
+    font-size: 18px;
+  }
+  .hero-metric-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .hero-image-orbit { width: 240px; height: 300px; --orbit-scale: 0.5; }
   .hero-image-outer { width: 200px; height: 260px; }
 }
 
