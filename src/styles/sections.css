@@ -502,8 +502,9 @@
 /* ── Hero Responsive ── */
 @media (max-width: 1024px) {
   .hero-name { font-size: 56px; }
-  .hero-image-orbit { width: 380px; height: 440px; --orbit-scale: 0.8; }
+  .hero-image-orbit { width: 380px; height: 440px; }
   .hero-image-outer { width: 280px; height: 350px; }
+  .hero-float-icon { display: none; }
 }
 
 @media (max-width: 900px) {
@@ -518,8 +519,9 @@
   .hero-buttons { justify-content: center; }
   .hero-socials { justify-content: center; }
   .hero-right { order: -1; }
-  .hero-image-orbit { width: 300px; height: 360px; --orbit-scale: 0.6; }
+  .hero-image-orbit { width: 300px; height: 360px; }
   .hero-image-outer { width: 240px; height: 300px; border-radius: 20px; }
+  .hero-float-icon { display: none; }
   .hero-scroll-indicator { display: none; }
 }
 
@@ -527,19 +529,19 @@
   .hero-name { font-size: 44px; }
   .hero-metrics { 
     grid-template-columns: repeat(4, 1fr); 
-    gap: 6px; 
+    gap: 8px; 
   }
   .hero-metric-card {
-    padding: 10px 4px;
+    padding: 12px 6px;
   }
   .hero-metric-value {
-    font-size: 18px;
+    font-size: 16px;
   }
   .hero-metric-label {
-    font-size: 9px;
-    letter-spacing: 1px;
+    font-size: 8px;
+    letter-spacing: 0.5px;
   }
-  .hero-image-orbit { width: 240px; height: 300px; --orbit-scale: 0.5; }
+  .hero-image-orbit { width: 240px; height: 300px; }
   .hero-image-outer { width: 200px; height: 260px; }
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
@@ -14,6 +14,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+
+  const menuRef = useRef(null);
+  const toggleRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +34,20 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        mobileOpen &&
+        menuRef.current && !menuRef.current.contains(event.target) &&
+        toggleRef.current && !toggleRef.current.contains(event.target)
+      ) {
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [mobileOpen]);
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
@@ -62,6 +79,7 @@ export default function Navbar() {
         </div>
 
         <div
+          ref={toggleRef}
           className={`nav-toggle ${mobileOpen ? 'open' : ''}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
@@ -75,6 +93,7 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            ref={menuRef}
             className="mobile-menu"
             initial={{ x: 280 }}
             animate={{ x: 0 }}
